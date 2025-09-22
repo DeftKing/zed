@@ -1,0 +1,32 @@
+name: Build Zed release (Windows x64, VS2022)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      # Checkout repo
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Install Rust stable toolchain
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          target: x86_64-pc-windows-msvc
+
+      # Ensure Visual Studio 2022 build tools are available
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      # Build & run release binary
+      - name: Build and Run
+        run: cargo run --release
