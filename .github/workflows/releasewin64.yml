@@ -2,31 +2,43 @@ name: Build Zed release (Windows x64, VS2022)
 
 on:
   push:
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: windows-latest
 
+    env:
+      # Сокращаем пути, чтобы не было ошибки "path too long"
+      CARGO_HOME: C:\c
+      CARGO_TARGET_DIR: C:\t
+
     steps:
-      # Checkout repo
-      - name: Checkout
+      - name: Checkout source
         uses: actions/checkout@v4
 
-      # Install Rust stable toolchain
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          override: true
           target: x86_64-pc-windows-msvc
+          override: true
 
-      # Ensure Visual Studio 2022 build tools are available
-      - name: Setup MSVC
+      - name: Setup MSVC (Visual Studio 2022)
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x64
 
-      # Build & run release binary
-      - name: Build and Run
+      - name: Build (Release)
+        run: cargo build --release
+
+      - name: Run (Release)
         run: cargo run --release
+
+      - name: Upload exe artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rust-app-exe
+          path: C:\t\release\*.exe
