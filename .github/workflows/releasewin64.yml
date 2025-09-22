@@ -34,8 +34,8 @@ jobs:
       - name: Build (Release)
         run: cargo build --release
 
-      - name: Run (Release)
-        run: cargo run --release
+      #- name: Run (Release)
+        #run: cargo run --release
 
       - name: Upload exe artifact
         uses: actions/upload-artifact@v4
